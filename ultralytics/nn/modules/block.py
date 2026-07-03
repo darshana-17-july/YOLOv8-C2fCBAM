@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 from ultralytics.utils.torch_utils import fuse_conv_and_bn
 
-from .conv import Conv, DWConv, GhostConv, LightConv, RepConv, autopad
+from .conv import (Conv, DWConv, GhostConv, LightConv, RepConv, CBAM, autopad)
 from .transformer import TransformerBlock
 
 __all__ = (
@@ -32,6 +32,7 @@ __all__ = (
     "Bottleneck",
     "BottleneckCSP",
     "C2f",
+    "C2fCBAM",
     "C2fAttn",
     "C2fCIB",
     "C2fPSA",
@@ -317,6 +318,25 @@ class C2f(nn.Module):
         y = [y[0], y[1]]
         y.extend(m(y[-1]) for m in self.m)
         return self.cv2(torch.cat(y, 1))
+
+class C2fCBAM(C2f):
+    """
+    C2f block with CBAM Attention
+    """
+
+    def __init__(self, c1, c2, n=1, shortcut=False, g=1, e=0.5):
+        super().__init__(c1, c2, n, shortcut, g, e)
+
+        # Existing CBAM is already available in conv.py
+        self.cbam = CBAM(c2)
+
+    def forward(self, x):
+
+        x = super().forward(x)
+
+        x = self.cbam(x)
+
+        return x
 
 
 class C3(nn.Module):
