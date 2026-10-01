@@ -8,7 +8,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 from ultralytics.nn.autobackend import check_class_names
 from ultralytics.nn.modules import (
@@ -31,8 +31,8 @@ from ultralytics.nn.modules import (
     Bottleneck,
     BottleneckCSP,
     C2f,
-    C2fCBAM,
     C2fAttn,
+    C2fCBAM,
     C2fCIB,
     C2fPSA,
     C3Ghost,
@@ -1857,7 +1857,7 @@ def parse_model(d, ch, verbose=True):
             C1,
             C2,
             C2f,
-            C2fCBAM,      
+            C2fCBAM,
             C3k2,
             C2fAttn,
             C3,
