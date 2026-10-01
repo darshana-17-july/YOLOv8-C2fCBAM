@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
 from ultralytics.utils.torch_utils import fuse_conv_and_bn
 
-from .conv import (Conv, DWConv, GhostConv, LightConv, RepConv, CBAM, autopad)
+from .conv import CBAM, Conv, DWConv, GhostConv, LightConv, RepConv, autopad
 from .transformer import TransformerBlock
 
 __all__ = (
@@ -32,8 +32,8 @@ __all__ = (
     "Bottleneck",
     "BottleneckCSP",
     "C2f",
-    "C2fCBAM",
     "C2fAttn",
+    "C2fCBAM",
     "C2fCIB",
     "C2fPSA",
     "C3Ghost",
@@ -319,10 +319,9 @@ class C2f(nn.Module):
         y.extend(m(y[-1]) for m in self.m)
         return self.cv2(torch.cat(y, 1))
 
+
 class C2fCBAM(C2f):
-    """
-    C2f block with CBAM Attention
-    """
+    """C2f block with CBAM Attention."""
 
     def __init__(self, c1, c2, n=1, shortcut=False, g=1, e=0.5):
         super().__init__(c1, c2, n, shortcut, g, e)
